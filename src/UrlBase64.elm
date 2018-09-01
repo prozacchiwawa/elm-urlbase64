@@ -22,10 +22,11 @@ of the decoders underneath.
 
 -}
 
+import Maybe as Maybe
 import Regex exposing (Regex)
 
 replaceForUrl : Regex
-replaceForUrl = Regex.regex "[\\+/=]"
+replaceForUrl = Regex.fromString "[\\+/=]" |> Maybe.withDefault Regex.never
 
 {-| Expose the given function to the given string and convert the result from
 the standard base64 alphabet and trim trailing '=' characters.
@@ -37,17 +38,18 @@ Compose this with a base64 encoder to make a url-base64 encoder.
 -}
 encode : (a -> Result String String) -> a -> Result String String
 encode enc t =
-    let replaceChar {match} =
-        case match of
-            "+" -> "-"
-            "/" -> "_"
-            _ -> ""
+    let 
+        replaceChar rematch =
+            case rematch.match of
+                "+" -> "-"
+                "/" -> "_"
+                _ -> ""
     in
     enc t
-    |> Result.map (Regex.replace Regex.All replaceForUrl replaceChar)
+    |> Result.map (Regex.replace replaceForUrl replaceChar)
 
 replaceFromUrl : Regex
-replaceFromUrl = Regex.regex "[-_]"
+replaceFromUrl = Regex.fromString "[-_]" |> Maybe.withDefault Regex.never
 
 {-|
 Expose the given function to the standard base64 alphabet form of the given
@@ -60,10 +62,11 @@ Compose this with a base64 decoder to make a url-base64 decoder.
 -}
 decode : (String -> Result String a) -> String -> Result String a
 decode dec e =
-    let replaceChar {match} =
-        case match of
-            "-" -> "+"
-            _ -> "/"
+    let 
+        replaceChar rematch =
+            case rematch.match of
+                "-" -> "+"
+                _ -> "/"
     in
-    let ilen = (4 - (String.length e)) % 4 in
-    dec (Regex.replace Regex.All replaceFromUrl replaceChar (e ++ (String.repeat ilen "=")))
+    let ilen = modBy (4 - (String.length e)) 4 in
+    dec (Regex.replace replaceFromUrl replaceChar (e ++ (String.repeat ilen "=")))
