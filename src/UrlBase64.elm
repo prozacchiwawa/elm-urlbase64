@@ -67,6 +67,15 @@ decode dec e =
             case rematch.match of
                 "-" -> "+"
                 _ -> "/"
+
+        strlen = String.length e
+
+        hanging = modBy strlen 4
+
+        ilen =
+            if hanging == 0 then
+                0
+            else
+                4 - hanging
     in
-    let ilen = modBy (4 - (String.length e)) 4 in
     dec (Regex.replace replaceFromUrl replaceChar (e ++ (String.repeat ilen "=")))
