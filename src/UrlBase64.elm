@@ -70,7 +70,7 @@ decode dec e =
 
         strlen = String.length e
 
-        hanging = modBy strlen 4
+        hanging = if strlen == 0 then 4 else modBy strlen 4
 
         ilen =
             if hanging == 0 then
