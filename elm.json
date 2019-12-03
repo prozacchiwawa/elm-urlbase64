@@ -3,7 +3,7 @@
     "name": "prozacchiwawa/elm-urlbase64",
     "summary": "Wraps base64 into a url safe base64 implementation",
     "license": "MIT",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "exposed-modules": [
         "UrlBase64"
     ],
