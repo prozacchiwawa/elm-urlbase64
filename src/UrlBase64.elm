@@ -38,7 +38,7 @@ Compose this with a base64 encoder to make a url-base64 encoder.
 -}
 encode : (a -> Result String String) -> a -> Result String String
 encode enc t =
-    let 
+    let
         replaceChar rematch =
             case rematch.match of
                 "+" -> "-"
@@ -62,7 +62,7 @@ Compose this with a base64 decoder to make a url-base64 decoder.
 -}
 decode : (String -> Result String a) -> String -> Result String a
 decode dec e =
-    let 
+    let
         replaceChar rematch =
             case rematch.match of
                 "-" -> "+"
@@ -70,7 +70,7 @@ decode dec e =
 
         strlen = String.length e
 
-        hanging = if strlen == 0 then 4 else modBy strlen 4
+        hanging = if strlen == 0 then 4 else modBy 4 strlen
 
         ilen =
             if hanging == 0 then
